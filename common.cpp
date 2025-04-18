@@ -412,21 +412,6 @@ int random_between(u32_t a, u32_t b) {
         return a + get_fake_random_number() % (b + 1 - a);
 }
 
-/*
-u64_t get_current_time()//ms
-{
-        timespec tmp_time;
-        clock_gettime(CLOCK_MONOTONIC, &tmp_time);
-        return ((u64_t)tmp_time.tv_sec)*1000llu+((u64_t)tmp_time.tv_nsec)/(1000*1000llu);
-}
-
-u64_t get_current_time_us()
-{
-        timespec tmp_time;
-        clock_gettime(CLOCK_MONOTONIC, &tmp_time);
-        return (uint64_t(tmp_time.tv_sec))*1000llu*1000llu+ (uint64_t(tmp_time.tv_nsec))/1000llu;
-}*/
-
 u64_t get_current_time_us() {
     static u64_t value_fix = 0;
     static u64_t largest_value = 0;
@@ -503,25 +488,9 @@ char *my_ntoa(u32_t ip) {
 }
 
 u64_t get_fake_random_number_64() {
-    // u64_t ret;
-    // int size=read(random_fd.get_fd(),&ret,sizeof(ret));
-    // if(size!=sizeof(ret))
-    //{
-    //	mylog(log_fatal,"get random number failed %d\n",size);
-
-    //	myexit(-1);
-    //}
-
     return my_random.gen64();
 }
 u32_t get_fake_random_number() {
-    // u32_t ret;
-    // int size=read(random_fd.get_fd(),&ret,sizeof(ret));
-    // if(size!=sizeof(ret))
-    //{
-    //	mylog(log_fatal,"get random number failed %d\n",size);
-    //	myexit(-1);
-    // }
     return my_random.gen32();
 }
 u32_t get_fake_random_number_nz()  // nz for non-zero
@@ -533,25 +502,6 @@ u32_t get_fake_random_number_nz()  // nz for non-zero
     return ret;
 }
 
-/*
-u64_t ntoh64(u64_t a)
-{
-        if(__BYTE_ORDER == __LITTLE_ENDIAN)
-        {
-                return __bswap_64( a);
-        }
-        else return a;
-
-}
-u64_t hton64(u64_t a)
-{
-        if(__BYTE_ORDER == __LITTLE_ENDIAN)
-        {
-                return __bswap_64( a);
-        }
-        else return a;
-
-}*/
 
 void setnonblocking(int sock) {
 #if !defined(__MINGW32__)
@@ -656,93 +606,7 @@ void signal_handler(int sig) {
     about_to_exit = 1;
     // myexit(0);
 }
-/*
-int numbers_to_char(id_t id1,id_t id2,id_t id3,char * &data,int &len)
-{
-        static char buf[buf_len];
-        data=buf;
-        id_t tmp=htonl(id1);
-        memcpy(buf,&tmp,sizeof(tmp));
 
-        tmp=htonl(id2);
-        memcpy(buf+sizeof(tmp),&tmp,sizeof(tmp));
-
-        tmp=htonl(id3);
-        memcpy(buf+sizeof(tmp)*2,&tmp,sizeof(tmp));
-
-        len=sizeof(id_t)*3;
-        return 0;
-}
-
-
-int char_to_numbers(const char * data,int len,id_t &id1,id_t &id2,id_t &id3)
-{
-        if(len<int(sizeof(id_t)*3)) return -1;
-        id1=ntohl(  *((id_t*)(data+0)) );
-        id2=ntohl(  *((id_t*)(data+sizeof(id_t))) );
-        id3=ntohl(  *((id_t*)(data+sizeof(id_t)*2)) );
-        return 0;
-}
-*/
-
-/*
-int set_timer_ms(int epollfd,int &timer_fd,u32_t timer_interval)
-{
-        int ret;
-        epoll_event ev;
-
-        itimerspec its;
-        memset(&its,0,sizeof(its));
-
-        if((timer_fd=timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK)) < 0)
-        {
-                mylog(log_fatal,"timer_fd create error\n");
-                myexit(1);
-        }
-        its.it_interval.tv_sec=(timer_interval/1000);
-        its.it_interval.tv_nsec=(timer_interval%1000)*1000ll*1000ll;
-        its.it_value.tv_nsec=1; //imidiately
-        timerfd_settime(timer_fd,0,&its,0);
-
-
-        ev.events = EPOLLIN;
-        ev.data.fd = timer_fd;
-
-        ret=epoll_ctl(epollfd, EPOLL_CTL_ADD, timer_fd, &ev);
-        if (ret < 0) {
-                mylog(log_fatal,"epoll_ctl return %d\n", ret);
-                myexit(-1);
-        }
-        return 0;
-}*/
-/*
-int create_new_udp(int &new_udp_fd,int remote_address_uint32,int remote_port)
-{
-        struct sockaddr_in remote_addr_in;
-
-        socklen_t slen = sizeof(sockaddr_in);
-        memset(&remote_addr_in, 0, sizeof(remote_addr_in));
-        remote_addr_in.sin_family = AF_INET;
-        remote_addr_in.sin_port = htons(remote_port);
-        remote_addr_in.sin_addr.s_addr = remote_address_uint32;
-
-        new_udp_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if (new_udp_fd < 0) {
-                mylog(log_warn, "create udp_fd error\n");
-                return -1;
-        }
-        setnonblocking(new_udp_fd);
-        set_buf_size(new_udp_fd);
-
-        mylog(log_debug, "created new udp_fd %d\n", new_udp_fd);
-        int ret = connect(new_udp_fd, (struct sockaddr *) &remote_addr_in, slen);
-        if (ret != 0) {
-                mylog(log_warn, "udp fd connect fail %d %s\n",ret,strerror(errno));
-                close(new_udp_fd);
-                return -1;
-        }
-        return 0;
-}*/
 
 int round_up_div(int a, int b) {
     return (a + b - 1) / b;
@@ -782,65 +646,7 @@ int create_fifo(char *file) {
 #endif
 }
 
-/*
-int new_listen_socket(int &fd,u32_t ip,int port)
-{
-        fd =socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-        int yes = 1;
-        //setsockopt(udp_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-
-        struct sockaddr_in local_me={0};
-
-        socklen_t slen = sizeof(sockaddr_in);
-        //memset(&local_me, 0, sizeof(local_me));
-        local_me.sin_family = AF_INET;
-        local_me.sin_port = htons(port);
-        local_me.sin_addr.s_addr = ip;
-
-        if (::bind(fd, (struct sockaddr*) &local_me, slen) == -1) {
-                mylog(log_fatal,"socket bind error\n");
-                //perror("socket bind error");
-                myexit(1);
-        }
-        setnonblocking(fd);
-    set_buf_size(fd,socket_buf_size);
-
-    mylog(log_debug,"local_listen_fd=%d\n",fd);
-
-        return 0;
-}
-int new_connected_socket(int &fd,u32_t ip,int port)
-{
-        char ip_port[40];
-        sprintf(ip_port,"%s:%d",my_ntoa(ip),port);
-
-        struct sockaddr_in remote_addr_in = { 0 };
-
-        socklen_t slen = sizeof(sockaddr_in);
-        //memset(&remote_addr_in, 0, sizeof(remote_addr_in));
-        remote_addr_in.sin_family = AF_INET;
-        remote_addr_in.sin_port = htons(port);
-        remote_addr_in.sin_addr.s_addr = ip;
-
-        fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if (fd < 0) {
-                mylog(log_warn, "[%s]create udp_fd error\n", ip_port);
-                return -1;
-        }
-        setnonblocking(fd);
-        set_buf_size(fd, socket_buf_size);
-
-        mylog(log_debug, "[%s]created new udp_fd %d\n", ip_port, fd);
-        int ret = connect(fd, (struct sockaddr *) &remote_addr_in, slen);
-        if (ret != 0) {
-                mylog(log_warn, "[%s]fd connect fail\n",ip_port);
-                sock_close(fd);
-                return -1;
-        }
-        return 0;
-}
-*/
 int new_listen_socket2(int &fd, address_t &addr) {
     fd = socket(addr.get_type(), SOCK_DGRAM, IPPROTO_UDP);
 

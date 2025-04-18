@@ -58,17 +58,13 @@ char rs_par_str[rs_str_len] = "20:10";
 
 int from_normal_to_fec(conn_info_t &conn_info, char *data, int len, int &out_n, char **&out_arr, int *&out_len, my_time_t *&out_delay) {
     static my_time_t out_delay_buf[max_fec_packet_num + 100] = {0};
-    // static int out_len_buf[max_fec_packet_num+100]={0};
-    // static int counter=0;
     out_delay = out_delay_buf;
-    // out_len=out_len_buf;
     inner_stat_t &inner_stat = conn_info.stat.normal_to_fec;
     if (disable_fec) {
         if (data == 0) {
             out_n = 0;
             return 0;
         }
-        // assert(data!=0);
         inner_stat.input_packet_num++;
         inner_stat.input_packet_size += len;
         inner_stat.output_packet_num++;
@@ -88,16 +84,10 @@ int from_normal_to_fec(conn_info_t &conn_info, char *data, int len, int &out_n, 
             inner_stat.input_packet_num++;
             inner_stat.input_packet_size += len;
         }
-        // counter++;
 
         conn_info.fec_encode_manager.input(data, len);
 
-        // if(counter%5==0)
-        // conn_info.fec_encode_manager.input(0,0);
 
-        // int n;
-        // char **s_arr;
-        // int s_len;
 
         conn_info.fec_encode_manager.output(out_n, out_arr, out_len);
 
@@ -109,13 +99,10 @@ int from_normal_to_fec(conn_info_t &conn_info, char *data, int len, int &out_n, 
                 my_time_t current_time = get_current_time_us();
                 my_time_t tmp;
                 assert(first_packet_time != 0);
-                // mylog(log_info,"current_time=%llu first_packlet_time=%llu   fec_pending_time=%llu\n",current_time,first_packet_time,(my_time_t)fec_pending_time);
                 if ((my_time_t)conn_info.fec_encode_manager.get_pending_time() >= (current_time - first_packet_time)) {
                     tmp = (my_time_t)conn_info.fec_encode_manager.get_pending_time() - (current_time - first_packet_time);
-                    // mylog(log_info,"tmp=%llu\n",tmp);
                 } else {
                     tmp = 0;
-                    // mylog(log_info,"0\n");
                 }
                 common_latency += tmp;
             }
@@ -144,12 +131,6 @@ int from_normal_to_fec(conn_info_t &conn_info, char *data, int len, int &out_n, 
 
     mylog(log_trace, "from_normal_to_fec input_len=%d,output_n=%d\n", len, out_n);
 
-    // for(int i=0;i<n;i++)
-    //{
-    // delay_send(0,dest,s_arr[i],s_len);
-    //}
-    // delay_send(0,dest,data,len);
-    // delay_send(1000*1000,dest,data,len);
     return 0;
 }
 int from_fec_to_normal(conn_info_t &conn_info, char *data, int len, int &out_n, char **&out_arr, int *&out_len, my_time_t *&out_delay) {

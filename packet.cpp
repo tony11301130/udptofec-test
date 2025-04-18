@@ -129,22 +129,6 @@ int de_obscure_old(const char *input, int in_len, char *output, int &out_len) {
     return 0;
 }
 
-/*
-int sendto_fd_ip_port (int fd,u32_t ip,int port,char * buf, int len,int flags)
-{
-
-        sockaddr_in tmp_sockaddr;
-
-        memset(&tmp_sockaddr,0,sizeof(tmp_sockaddr));
-        tmp_sockaddr.sin_family = AF_INET;
-        tmp_sockaddr.sin_addr.s_addr = ip;
-        tmp_sockaddr.sin_port = htons(uint16_t(port));
-
-        return sendto(fd, buf,
-                        len , 0,
-                        (struct sockaddr *) &tmp_sockaddr,
-                        sizeof(tmp_sockaddr));
-}*/
 
 int sendto_fd_addr(int fd, address_t addr, char *buf, int len, int flags) {
     return sendto(fd, buf,
@@ -152,11 +136,7 @@ int sendto_fd_addr(int fd, address_t addr, char *buf, int len, int flags) {
                   (struct sockaddr *)&addr.inner,
                   addr.get_len());
 }
-/*
-int sendto_ip_port (u32_t ip,int port,char * buf, int len,int flags)
-{
-        return sendto_fd_ip_port(local_listen_fd,ip,port,buf,len,flags);
-}*/
+
 
 int send_fd(int fd, char *buf, int len, int flags) {
     return send(fd, buf, len, flags);
@@ -193,37 +173,6 @@ int my_send(const dest_t &dest, char *data, int len) {
             return send_fd(fd, data, len, 0);
             break;
         }
-        /*
-        case type_fd64_ip_port_conv:
-        {
-                if(!fd_manager.exist(dest.inner.fd64)) return -1;
-                int fd=fd_manager.to_fd(dest.inner.fd64);
-
-                char *new_data;
-                int new_len;
-
-                put_conv(dest.conv,data,len,new_data,new_len);
-                return sendto_fd_ip_port(fd,dest.inner.fd64_ip_port.ip_port.ip,dest.inner.fd64_ip_port.ip_port.port,new_data,new_len,0);
-                break;
-        }*/
-
-        /*
-        case type_fd64_conv:
-        {
-                char *new_data;
-                int new_len;
-                put_conv(dest.conv,data,len,new_data,new_len);
-
-                if(!fd_manager.exist(dest.inner.fd64)) return -1;
-                int fd=fd_manager.to_fd(dest.inner.fd64);
-                return send_fd(fd,new_data,new_len,0);
-        }*/
-        /*
-        case type_fd:
-        {
-                send_fd(dest.inner.fd,data,len,0);
-                break;
-        }*/
         default:
             assert(0 == 1);
     }

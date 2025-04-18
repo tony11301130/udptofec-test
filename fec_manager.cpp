@@ -11,12 +11,6 @@
 #include "lib/rs.h"
 #include "fd_manager.h"
 
-// int g_fec_data_num=20;
-// int g_fec_redundant_num=10;
-// int g_fec_mtu=1250;
-// int g_fec_queue_len=200;
-// int g_fec_timeout=8*1000; //8ms
-// int g_fec_mode=0;
 
 fec_parameter_t g_fec_par;
 
@@ -132,45 +126,13 @@ fec_encode_manager_t::~fec_encode_manager_t() {
     clear_all();
     // fd_manager.fd64_close(timer_fd64);
 }
-/*
-u64_t fec_encode_manager_t::get_timer_fd64()
-{
-        return timer_fd64;
-}*/
 
 fec_encode_manager_t::fec_encode_manager_t() {
-    // int timer_fd;
-
-    /*
-    if ((timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK)) < 0)
-    {
-            mylog(log_fatal,"timer_fd create error");
-            myexit(1);
-    }
-    timer_fd64=fd_manager.create(timer_fd);*/
-
-    /////reset_fec_parameter(g_fec_data_num,g_fec_redundant_num,g_fec_mtu,g_fec_queue_len,g_fec_timeout,g_fec_mode);
 
     fec_par.clone(g_fec_par);
     clear_data();
 }
-/*
-int fec_encode_manager_t::reset_fec_parameter(int data_num,int redundant_num,int mtu,int queue_len,int timeout,int mode)
-{
-        fec_data_num=data_num;
-        fec_redundant_num=redundant_num;
-        fec_mtu=mtu;
-        fec_queue_len=queue_len;
-        fec_timeout=timeout;
-        fec_mode=mode;
 
-        assert(data_num+redundant_num<max_fec_packet_num);
-
-        //clear();
-
-        clear_data();
-        return 0;
-}*/
 int fec_encode_manager_t::append(char *s, int len /*,int &is_first_packet*/) {
     if (counter == 0) {
         first_packet_time = get_current_time_us();
